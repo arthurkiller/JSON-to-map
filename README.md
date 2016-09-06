@@ -1,5 +1,5 @@
 # JSON-to-map
-convert the json into a string <---> string map
+Convert the json into a string <---> string map
 
 the key can be set into multi-prefix style to make sure if there get some keys in the same.
 ```
