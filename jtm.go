@@ -8,7 +8,8 @@ import (
 	"strconv"
 )
 
-type JsonToMap interface {
+//JSONToMap object : provide the convertion of json to map
+type JSONToMap interface {
 	Generate(url string) error
 	Get() map[string]string
 }
@@ -18,7 +19,8 @@ type jsontomap struct {
 	mapR map[string]string
 }
 
-func Newjtm() JsonToMap {
+//Newjtm init a jtm stauct
+func Newjtm() JSONToMap {
 	return &jsontomap{}
 }
 
@@ -27,64 +29,49 @@ func getMap(mapS map[string]interface{}, mapR map[string]string, lastkey string)
 		switch v := val.(type) {
 		case float64:
 			if lastkey == "#NULL" {
-				mapR[string(key)] = fmt.Sprint(v)
+				mapR[fmt.Sprint(key)] = fmt.Sprint(v)
 			} else {
-				mapR[lastkey+"-"+string(key)] = fmt.Sprint(v)
+				mapR[lastkey+"-"+fmt.Sprint(key)] = fmt.Sprint(v)
 			}
 		case string:
 			if lastkey == "#NULL" {
-				mapR[string(key)] = fmt.Sprint(v)
+				mapR[fmt.Sprint(key)] = fmt.Sprint(v)
 			} else {
-				mapR[lastkey+"-"+string(key)] = fmt.Sprint(v)
+				mapR[lastkey+"-"+fmt.Sprint(key)] = fmt.Sprint(v)
 			}
 		case bool:
 			if lastkey == "#NULL" {
-				mapR[string(key)] = fmt.Sprint(v)
+				mapR[fmt.Sprint(key)] = fmt.Sprint(v)
 			} else {
-				mapR[lastkey+"-"+string(key)] = fmt.Sprint(v)
+				mapR[lastkey+"-"+fmt.Sprint(key)] = fmt.Sprint(v)
+			}
+		case map[string]interface{}:
+			if lastkey == "#NULL" {
+				getMap(v, mapR, fmt.Sprint(key))
+			} else {
+				getMap(v, mapR, lastkey+"-"+fmt.Sprint(key))
 			}
 		case []interface{}:
 			for i, v1 := range v {
 				if v11, ok := v1.(map[string]interface{}); ok {
 					if lastkey == "#NULL" {
-						getMap(v11, mapR, string(key))
+						getMap(v11, mapR, fmt.Sprint(key))
 					} else {
-						getMap(v11, mapR, lastkey+"-"+strconv.Itoa(i)+"-"+string(key))
+						getMap(v11, mapR, lastkey+"-"+strconv.Itoa(i)+"-"+fmt.Sprint(key))
 					}
 				} else {
 					if lastkey == "#NULL" {
-						mapR[string(key)] = fmt.Sprint(v1)
+						mapR[fmt.Sprint(key)+"-"+fmt.Sprint(i)] = fmt.Sprint(v1)
 					} else {
-						mapR[lastkey+"-"+string(key)] = fmt.Sprint(v1)
+						mapR[lastkey+"-"+fmt.Sprint(key)+"-"+fmt.Sprint(i)] = fmt.Sprint(v1)
 					}
-				}
-			}
-		case map[string]interface{}:
-			if lastkey == "#NULL" {
-				getMap(v, mapR, string(key))
-			} else {
-				getMap(v, mapR, lastkey+"-"+string(key))
-			}
-		case interface{}:
-			if v1, ok := v.(map[string]interface{}); ok {
-				if lastkey == "#NULL" {
-					getMap(v1, mapR, string(key))
-				} else {
-					getMap(v1, mapR, lastkey+"-"+string(key))
-				}
-
-			} else {
-				if lastkey == "#NULL" {
-					mapR[string(key)] = fmt.Sprint(v)
-				} else {
-					mapR[lastkey+"-"+string(key)] = fmt.Sprint(v)
 				}
 			}
 		default:
 			if lastkey == "#NULL" {
-				mapR[string(key)] = fmt.Sprint(v)
+				mapR[fmt.Sprint(key)] = fmt.Sprint(v)
 			} else {
-				mapR[lastkey+"-"+string(key)] = fmt.Sprint(v)
+				mapR[lastkey+"-"+fmt.Sprint(key)] = fmt.Sprint(v)
 			}
 		}
 	}
@@ -109,8 +96,6 @@ func (c *jsontomap) Generate(url string) error {
 	if err != nil {
 		fmt.Println("format json error : ", err)
 	}
-
-	fmt.Println(c.mapS)
 
 	getMap(c.mapS, c.mapR, "#NULL")
 	return nil
