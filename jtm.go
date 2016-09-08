@@ -59,6 +59,12 @@ func getMap(mapS map[string]interface{}, mapR map[string]string, lastkey string)
 					} else {
 						getMap(v11, mapR, lastkey+"-"+strconv.Itoa(i)+"-"+fmt.Sprint(key))
 					}
+					//			} else if v11, ok := v1.([]interface{}); ok {
+					//				if lastkey == "#NULL" {
+					//					getMap(v11, mapR, fmt.Sprint(key))
+					//				} else {
+					//					getMap(v11, mapR, lastkey+"-"+strconv.Itoa(i)+"-"+fmt.Sprint(key))
+					//				}
 				} else {
 					if lastkey == "#NULL" {
 						mapR[fmt.Sprint(key)+"-"+fmt.Sprint(i)] = fmt.Sprint(v1)
