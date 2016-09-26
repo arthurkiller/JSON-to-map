@@ -10,3 +10,6 @@ will be transfer into this key:
 ```
     Subtree-Redis-Master  <----->  [value]...
 ```
+
+## TODO 
+add more type support just like the struct & file ...
